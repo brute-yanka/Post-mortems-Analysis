@@ -189,7 +189,7 @@ export default function Section0_Overview({ incidents }) {
   return (
     <section className="story-section ov-section">
       <header className="section-header">
-        <p className="kicker">§ 00 · The lay of the land</p>
+        <p className="kicker">§ 01 · Overview</p>
         <h2>Three providers, a decade of disclosures</h2>
         <p className="lede">
           Before any comparison, the basics. Hover an icon for what each number really tells us - and click "longest single outage" to jump straight to that incident's post-mortem.

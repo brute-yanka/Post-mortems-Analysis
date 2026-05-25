@@ -205,7 +205,7 @@ export default function Section4_AreaChart({ incidents }) {
   return (
     <section className="story-section ac-section">
       <header className="section-header">
-        <p className="kicker">§ 04 · A decade of downtime</p>
+        <p className="kicker">§ 05 · A decade of downtime</p>
         <h2>How one provider's outage minutes shifted</h2>
         <p className="lede">
           Total reported downtime per month, annotated with the biggest incidents.

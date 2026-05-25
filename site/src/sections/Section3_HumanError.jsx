@@ -45,11 +45,11 @@ export default function Section3_HumanError({ incidents }) {
   return (
     <section className="story-section we-section">
       <header className="section-header">
-        <p className="kicker">§ 03 · The human factor</p>
+        <p className="kicker">§ 04 · The human factor</p>
         <h2>Only {humanCount} of {total} were "human error"</h2>
         <p className="lede">
           Every square is one published post-mortem, oldest to newest. Squares
-          carrying a user icon were flagged as human-triggered — typically a
+          carrying a user icon were flagged as human-triggered - typically a
           misconfiguration, a typo pushed to production, or a manual change
           that took effect immediately and without warning.
         </p>

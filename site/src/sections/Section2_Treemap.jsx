@@ -251,7 +251,7 @@ export default function Section2_Treemap({ incidents }) {
   return (
     <section className="story-section cs-section">
       <header className="section-header">
-        <p className="kicker">§ 02 · Why things broke</p>
+        <p className="kicker">§ 03 · Why things broke</p>
         <h2>Pick a cloud, trace the bugs</h2>
         <p className="lede">
           Each provider's root causes flow into the mitigations engineers reached for.

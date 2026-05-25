@@ -81,7 +81,7 @@ export default function Section1_Timeline({ incidents }) {
   return (
     <section className="story-section tl-section">
       <header className="section-header">
-        <p className="kicker">§ 01 · The timeline</p>
+        <p className="kicker">§ 02 · The timeline</p>
         <h2>Ten years, one dot per outage</h2>
         <p className="lede">
           Every published incident, plotted by date. Larger dots are longer
