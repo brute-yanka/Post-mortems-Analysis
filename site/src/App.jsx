@@ -18,12 +18,13 @@ export default function App() {
     <main className="storyboard">
       <header className="hero">
         <div className="hero__kicker">
-          <p className="kicker">A decade of post-mortems · 2011 - 2021</p>
+          <p className="kicker">AWS · Google Cloud · Azure · 2011 - 2021</p>
           <Disclaimer />
         </div>
         <h1>When the Cloud falls...</h1>
         <p className="dek">
-          What {incidents.length} publicly disclosed cloud incidents tell us about how the internet's plumbing actually breaks - and what we still can't see.
+          Every major cloud provider publishes post-mortems after a significant outage - candid accounts of what broke, why, and how engineers responded.
+          We used a <a href="https://github.com/IntelligentDDS/Post-mortems-Analysis" target="_blank" rel="noopener noreferrer">collection of {incidents.length} post-mortems</a>. Here is what a decade of failures looks like when you read them all at once.
         </p>
       </header>
 

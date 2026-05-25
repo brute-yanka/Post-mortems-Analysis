@@ -49,8 +49,9 @@ export default function Section3_HumanError({ incidents }) {
         <h2>Only {humanCount} of {total} were "human error"</h2>
         <p className="lede">
           Every square is one published post-mortem, oldest to newest. Squares
-          carrying a red user icon were flagged by analysts as caused by human
-          action - but every other square is software written by humans, too.
+          carrying a user icon were flagged as human-triggered — typically a
+          misconfiguration, a typo pushed to production, or a manual change
+          that took effect immediately and without warning.
         </p>
       </header>
 
