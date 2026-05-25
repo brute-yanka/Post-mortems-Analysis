@@ -195,7 +195,7 @@
 }
 
 .ac-tooltip strong {
-  color: var(--accent);
+  color: var(--fg);
   font-weight: 600;
   font-size: 0.75rem;
   letter-spacing: 0.08em;

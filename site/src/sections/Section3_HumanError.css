@@ -135,7 +135,7 @@
   box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
 }
 .we-tooltip strong {
-  color: var(--accent);
+  color: var(--fg);
   font-weight: 600;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
