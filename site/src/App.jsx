@@ -27,11 +27,11 @@ export default function App() {
         </p>
       </header>
 
-      <Reveal direction="left"><Section0_Overview incidents={incidents} /></Reveal>
-      <Reveal direction="right"><Section1_Timeline incidents={incidents} /></Reveal>
-      <Reveal direction="right"><Section2_Treemap incidents={incidents} /></Reveal>
-      <Reveal direction="left"><Section3_HumanError incidents={incidents} /></Reveal>
-      <Reveal direction="right"><Section4_AreaChart incidents={incidents} /></Reveal>
+      <Reveal direction="top" delay={160}><Section0_Overview incidents={incidents} /></Reveal>
+      <Reveal direction="right" delay={240}><Section1_Timeline incidents={incidents} /></Reveal>
+      <Reveal direction="left" delay={320}><Section2_Treemap incidents={incidents} /></Reveal>
+      <Reveal direction="right" delay={400}><Section3_HumanError incidents={incidents} /></Reveal>
+      <Reveal direction="bottom" delay={480}><Section4_AreaChart incidents={incidents} /></Reveal>
 
       <footer className="footer">
         <p>

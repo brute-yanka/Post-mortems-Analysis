@@ -1,17 +1,18 @@
 .reveal {
   opacity: 0;
-  transition: opacity 420ms ease-out, transform 420ms ease-out;
+  transition: opacity 650ms ease-out, transform 650ms ease-out;
   will-change: opacity, transform;
 }
 .reveal--left  { transform: translateX(-80px); }
 .reveal--right { transform: translateX(80px); }
-.reveal--up    { transform: translateY(60px); }
+.reveal--top   { transform: translateY(-60px); }
+.reveal--bottom { transform: translateY(60px); }
 
 .reveal.is-visible {
   opacity: 1;
   transform: none;
-  transition: opacity 780ms cubic-bezier(0.16, 0.7, 0.24, 1),
-              transform 780ms cubic-bezier(0.16, 0.7, 0.24, 1);
+  transition: opacity 1100ms cubic-bezier(0.16, 0.7, 0.24, 1),
+              transform 1100ms cubic-bezier(0.16, 0.7, 0.24, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {

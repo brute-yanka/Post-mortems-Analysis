@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { sum, median, format } from 'd3'
 import Tooltip from '../components/Tooltip.jsx'
 import IncidentModal from '../components/IncidentModal.jsx'
+import TriArrow from '../components/TriArrow.jsx'
 import './Section0_Overview.css'
 
 const PROVIDER_META = {
@@ -160,7 +161,10 @@ function ProviderCard({ provider, incidents, onSelectIncident }) {
                 <span className="ov-stat__icon" aria-label={item.label}>{item.icon}</span>
               </Tooltip>
               <div className="ov-stat__body">
-                <span className="ov-stat__value">{item.value}</span>
+                <span className="ov-stat__value">
+                  {item.value}
+                  {clickable && <TriArrow dir="right" size={15} className="ov-stat__arrow" />}
+                </span>
                 <span className="ov-stat__label">{item.label}</span>
               </div>
             </li>

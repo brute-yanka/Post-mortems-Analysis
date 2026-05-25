@@ -4,7 +4,7 @@ import { scaleLinear, scaleTime, timeFormat, timeMonth, timeYear, max, extent } 
 import IncidentModal from '../components/IncidentModal.jsx'
 import './Section4_AreaChart.css'
 
-const PROVIDERS = ['AWS', 'Google', 'Azure']
+const PROVIDERS = ['Azure', 'AWS', 'Google']
 const PROVIDER_META = {
   AWS: { color: 'var(--aws)', label: 'Amazon Web Services' },
   Google: { color: 'var(--google)', label: 'Google Cloud' },
@@ -46,6 +46,7 @@ function formatDuration(minutes) {
 export default function Section4_AreaChart({ incidents }) {
   const [provider, setProvider] = useState('AWS')
   const [hovered, setHovered] = useState(null)
+  const [selected, setSelected] = useState(null)
   const [modalIncident, setModalIncident] = useState(null)
 
   const providerIncidents = useMemo(
@@ -199,6 +200,7 @@ export default function Section4_AreaChart({ incidents }) {
 
   useEffect(() => {
     setHovered(null)
+    setSelected(null)
     setModalIncident(null)
   }, [provider])
 
@@ -208,8 +210,8 @@ export default function Section4_AreaChart({ incidents }) {
         <p className="kicker">§ 04 · A decade of downtime</p>
         <h2>How one provider's outage minutes shifted</h2>
         <p className="lede">
-          Total reported downtime per month with annotations flagging the
-          major incidents. Remember: this is the story of <em>what was
+          Total reported downtime per month. Click an annotated dot on the chart
+          to explore that incident. Remember: this is the story of <em>what was
           published</em>, not a full picture of reliability.
         </p>
       </header>
@@ -303,9 +305,9 @@ export default function Section4_AreaChart({ incidents }) {
               return (
                 <g
                   key={`${provider}-${marker.incident.id}`}
-                  className="ac-marker"
+                  className={`ac-marker ${selected?.id === marker.incident.id ? 'is-active' : ''}`}
                   style={{ '--marker-color': PROVIDER_META[provider].color }}
-                  onClick={() => setModalIncident(marker.incident)}
+                  onClick={() => setSelected(marker.incident)}
                 >
                   <line x1={marker.x} x2={marker.x} y1={marker.y} y2={labelY + 6} />
                   <circle cx={marker.x} cy={marker.y} r={4.2} className="ac-markerDot" />
@@ -337,6 +339,81 @@ export default function Section4_AreaChart({ incidents }) {
           document.body,
         )}
       </div>
+
+      {selected && (
+        <div className="ac-extension">
+          <div className="ac-issuePanel">
+            <div className="ac-issueHeader">
+              <div>
+                <p className="ac-issueKicker">
+                  {PROVIDER_META[provider].label} · {fmtMonth(selected.date)}
+                </p>
+                <h3>{selected.title}</h3>
+              </div>
+              <button
+                className="ac-issueLink"
+                onClick={() => setModalIncident(selected)}
+              >
+                Full post-mortem ↗
+              </button>
+            </div>
+            <div className="ac-issueBody">
+              <div className="ac-issueTop">
+                <p className="ac-issueMeta">
+                  {fmtMonth(selected.date)}
+                  <span className="ac-dot"> · </span>
+                  {formatDuration(selected.durationMinutes)} downtime
+                </p>
+                <div className="ac-issueStat">
+                  <span className="ac-issueStatLabel">Duration</span>
+                  <span className="ac-issueStatValue">{formatDuration(selected.durationMinutes)}</span>
+                </div>
+              </div>
+              {selected.summary && (
+                <div className="ac-issueCols">
+                  <div>
+                    <h4>Summary</h4>
+                    <p>{selected.summary}</p>
+                  </div>
+                </div>
+              )}
+              <div className="ac-issueFoot">
+                <div>
+                  <span className="ac-issueLabel">Root causes</span>
+                  <span className="ac-issueValue">
+                    {[...selected.rootCauseL1, ...selected.rootCauseL2].slice(0, 4).join(', ') || '-'}
+                  </span>
+                </div>
+                <div>
+                  <span className="ac-issueLabel">Mitigations</span>
+                  <span className="ac-issueValue">
+                    {selected.mitigationActions.slice(0, 3).join(', ') || '-'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="ac-issueList">
+            <h4>Top incidents</h4>
+            <p className="ac-issueListSub">by reported downtime</p>
+            <div className="ac-issueCards">
+              {majorIssues.map(inc => (
+                <button
+                  key={inc.id}
+                  className={`ac-issueCard ${selected?.id === inc.id ? 'is-active' : ''}`}
+                  onClick={() => setSelected(inc)}
+                >
+                  <span className="ac-issueCardTitle">{inc.title}</span>
+                  <span className="ac-issueCardMeta">
+                    {fmtMonth(inc.date)} · {formatDuration(inc.durationMinutes)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {modalIncident && (
         <IncidentModal incident={modalIncident} onClose={() => setModalIncident(null)} />

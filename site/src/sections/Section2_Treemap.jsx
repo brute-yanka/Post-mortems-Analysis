@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import TriArrow from '../components/TriArrow.jsx'
 import './Section2_Treemap.css'
 
 const PROVIDERS = ['AWS', 'Google', 'Azure']
@@ -7,15 +8,84 @@ const PROVIDER_COLOR = {
   Google: 'var(--google)',
   Azure:  'var(--azure)',
 }
-const PROVIDER_LABEL = {
-  AWS:    'Amazon Web Services',
-  Google: 'Google Cloud',
-  Azure:  'Microsoft Azure',
+
+const MAX_BUGS_SHOWN     = 8
+const MAX_SOLUTIONS_SHOWN = 8
+
+const BUG_EXPLAIN = {
+  'network':           'Routing, connectivity, or bandwidth failure',
+  'hardware':          'Physical component failure or degradation',
+  'software':          'Code defect or unexpected runtime behavior',
+  'configuration':     'Misconfigured service, setting, or policy',
+  'deployment':        'Issue introduced during a rollout or update',
+  'human action':      'Direct operator or engineer action caused the fault',
+  'capacity':          'Resource limits hit — scaling or throttling failure',
+  'dependency':        'Third-party or internal service cascaded failure',
+  'storage':           'Disk, database, or data-access problem',
+  'dns':               'Domain name resolution failure',
+  'certificate':       'TLS/SSL certificate expiry or validation error',
+  'overload':          'Unexpected traffic spike overwhelmed capacity',
+  'memory':            'Memory leak, exhaustion, or allocation error',
+  'cpu':               'CPU saturation or compute resource bottleneck',
+  'race condition':    'Concurrent operations produced an inconsistent state',
+  'unspecified':       'Root cause not documented in the post-mortem',
+  'other':             'Cause documented but outside standard categories',
 }
 
-const CloudIcon = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 16" fill="currentColor">
-    <path d="M19.5 15.5h-13c-2.5 0-4.5-2-4.5-4.5 0-2.3 1.7-4.2 4-4.5C6.4 3.7 8.9 1.5 12 1.5c2.8 0 5.2 1.8 6 4.4.2 0 .3-.1.5-.1 2.5 0 4.5 2 4.5 4.5 0 2.5-2 4.5-4.5 4.5z"/>
+const MITIGATION_EXPLAIN = {
+  'roll back deployment':            'Revert to a previously stable software version',
+  'rollback deployment':             'Revert to a previously stable software version',
+  'roll back configuration change':  'Restore settings to last known-good state',
+  'revert configuration':            'Restore previous configuration settings',
+  'revert the configuration change': 'Restore previous configuration settings',
+  'deploy a hotfix':                 'Ship an emergency code patch to production',
+  'deploy a platform hotfix':        'Emergency patch applied at the platform layer',
+  'apply a hotfix':                  'Ship an emergency code patch to production',
+  'deploy new update':               'Release a corrective software update',
+  'fix bug':                         'Identify and patch the underlying code defect',
+  'update configuration':            'Adjust system settings to correct the fault',
+  'change configuration':            'Modify settings to restore correct behavior',
+  'add capacity':                    'Provision more resources to meet demand',
+  'reduce load':                     'Throttle traffic or shed load to restore stability',
+  'recover automatically':           'System self-healed without manual intervention',
+  'self heal':                       'Automated recovery restored service',
+  'shift traffic':                   'Route requests away from the affected region',
+  'add monitoring':                  'Instrument the system to catch this failure sooner',
+  'fail over the affected processes': 'Switch to a backup system or region',
+  'manual recovery of the system':   'Engineers manually restored affected systems',
+}
+
+// Cloud shape path for viewBox "0 0 200 120"
+// Stroke-only, text placed at roughly (100, 68) and (100, 87)
+const CLOUD_PATH =
+  'M28,104 Q10,104 10,86 Q10,68 26,62 Q20,46 36,38 Q44,20 65,24 Q71,12 88,16 Q98,9 112,18 Q124,11 140,24 Q154,17 164,33 Q178,35 180,53 Q188,60 186,76 Q183,93 165,95 Q163,105 147,105 L28,104 Z'
+
+const CloudShape = ({ provider, count }) => (
+  <svg className="zm-cloud__svg" viewBox="0 0 200 120" fill="none" aria-hidden="true">
+    <path
+      d={CLOUD_PATH}
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    />
+    <text
+      x="100" y="63"
+      textAnchor="middle" dominantBaseline="middle"
+      fill="currentColor" fontSize="28" fontWeight="800"
+      fontFamily="ui-serif, Georgia, serif"
+    >
+      {provider}
+    </text>
+    <text
+      x="100" y="86"
+      textAnchor="middle" dominantBaseline="middle"
+      fill="currentColor" fontSize="13" opacity="0.75"
+      letterSpacing="0.06em"
+      fontFamily="ui-monospace, 'SF Mono', SFMono-Regular, Consolas, monospace"
+    >
+      {count} incidents
+    </text>
   </svg>
 )
 
@@ -25,7 +95,7 @@ const BugIcon = ({ className }) => (
     <path d="M8 2l1.88 1.88" />
     <path d="M14.12 3.88L16 2" />
     <path d="M9 7.13a3 3 0 0 1 6 0v1" />
-    <rect x="7" y="8" width="10" height="13" rx="5" fill="currentColor" fillOpacity="0.18" />
+    <rect x="7" y="8" width="10" height="13" rx="5" fill="currentColor" fillOpacity="0.12" />
     <path d="M12 21V10" />
     <path d="M6 13H3" />
     <path d="M21 13h-3" />
@@ -43,50 +113,11 @@ const WrenchIcon = ({ className }) => (
   </svg>
 )
 
-function mulberry32(seed) {
-  let s = seed >>> 0
-  return () => {
-    s = (s + 0x6D2B79F5) | 0
-    let t = s
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
-function scatter(count, seedStr) {
-  let seed = 0
-  for (let i = 0; i < seedStr.length; i++) seed = ((seed << 5) - seed + seedStr.charCodeAt(i)) | 0
-  const rand = mulberry32(Math.abs(seed) || 1)
-  const cols = Math.max(3, Math.ceil(Math.sqrt(count * 1.8)))
-  const rows = Math.ceil(count / cols)
-  const arr = []
-  for (let i = 0; i < count; i++) {
-    const col = i % cols
-    const row = Math.floor(i / cols)
-    const baseX = (col + 0.5) / cols
-    const baseY = (row + 0.5) / rows
-    const jX = (rand() - 0.5) * 0.55 / cols
-    const jY = (rand() - 0.5) * 0.55 / rows
-    arr.push({
-      x: Math.max(0.08, Math.min(0.92, baseX + jX)) * 100,
-      y: Math.max(0.18, Math.min(0.85, baseY + jY)) * 100,
-    })
-  }
-  return arr
-}
-
-function sizingFor(count) {
-  if (count <= 6)  return 'lg'
-  if (count <= 14) return 'md'
-  return 'sm'
-}
-
 export default function Section2_Treemap({ incidents }) {
-  const [view, setView] = useState('clouds')
+  const [view, setView]         = useState('clouds')
   const [provider, setProvider] = useState(null)
-  const [problem, setProblem] = useState(null)
-  const [zoom, setZoom] = useState(null)
+  const [problem, setProblem]   = useState(null)
+  const [zoom, setZoom]         = useState(null)
 
   const byProvider = useMemo(() => {
     const g = { AWS: [], Google: [], Azure: [] }
@@ -131,7 +162,7 @@ export default function Section2_Treemap({ incidents }) {
       setProvider(p)
       setView('bugs')
       setZoom(null)
-    }, 520)
+    }, 450)
   }
 
   const pickProblem = (name) => {
@@ -141,15 +172,11 @@ export default function Section2_Treemap({ incidents }) {
       setProblem(name)
       setView('wrenches')
       setZoom(null)
-    }, 520)
+    }, 400)
   }
 
-  const resetToClouds = () => {
-    setView('clouds'); setProvider(null); setProblem(null)
-  }
-  const backToBugs = () => {
-    setView('bugs'); setProblem(null)
-  }
+  const resetToClouds = () => { setView('clouds'); setProvider(null); setProblem(null) }
+  const backToBugs   = () => { setView('bugs'); setProblem(null) }
 
   return (
     <section className="story-section cs-section">
@@ -164,7 +191,9 @@ export default function Section2_Treemap({ incidents }) {
 
       {view !== 'clouds' && (
         <nav className="cs-crumbs" aria-label="Breadcrumb">
-          <button className="cs-crumb" onClick={resetToClouds}>← Pick another cloud</button>
+          <button className="cs-crumb" onClick={resetToClouds}>
+            <TriArrow dir="left" size={15} /> Pick another cloud
+          </button>
           {view === 'wrenches' && (
             <>
               <span className="cs-crumbSep">/</span>
@@ -176,9 +205,9 @@ export default function Section2_Treemap({ incidents }) {
         </nav>
       )}
 
-      <div className="cs-stage">
-        {view === 'clouds' && (
-          <div className="zm-clouds" key="clouds">
+      {view === 'clouds' && (
+        <div className="zm-clouds-wrap" key="clouds">
+          <div className="zm-clouds">
             {PROVIDERS.map(p => {
               const zoomingThis  = zoom?.kind === 'cloud' && zoom.target === p
               const fadingOthers = zoom?.kind === 'cloud' && zoom.target !== p
@@ -191,99 +220,96 @@ export default function Section2_Treemap({ incidents }) {
                   style={{ '--card-accent': PROVIDER_COLOR[p] }}
                   onClick={() => pickProvider(p)}
                   disabled={!!zoom}
+                  aria-label={`${p}: ${byProvider[p].length} incidents`}
                 >
-                  <CloudIcon className="zm-cloud__svg" />
-                  <span className="zm-cloud__sub">{PROVIDER_LABEL[p]}</span>
-                  <span className="zm-cloud__name">{p}</span>
-                  <span className="zm-cloud__count">{byProvider[p].length} incidents</span>
+                  <CloudShape provider={p} count={byProvider[p].length} />
                 </button>
               )
             })}
           </div>
-        )}
+        </div>
+      )}
 
-        {view === 'bugs' && (() => {
-          const positions = scatter(problems.length, provider)
-          const sz = sizingFor(problems.length)
-          return (
-            <div
-              className="zm-scatter zm-scatter--bugs"
-              key={`bugs-${provider}`}
-              style={{ '--card-accent': PROVIDER_COLOR[provider] }}
-            >
-              <h3 className="zm-stageTitle" style={{ color: PROVIDER_COLOR[provider] }}>
-                Inside {provider}'s cloud · {problems.length} kinds of bugs
-              </h3>
-              {problems.map((p, i) => {
+      {view === 'bugs' && (() => {
+        const shown   = problems.slice(0, MAX_BUGS_SHOWN)
+        const hidden  = problems.length - shown.length
+        return (
+          <div className="zm-panel" key={`bugs-${provider}`} style={{ '--card-accent': PROVIDER_COLOR[provider] }}>
+            <h3 className="zm-panel__title">
+              Inside {provider}'s cloud · top {shown.length} root causes
+            </h3>
+            <div className="zm-bug-grid">
+              {shown.map((p, i) => {
                 const zoomingThis  = zoom?.kind === 'bug' && zoom.target === p.name
                 const fadingOthers = zoom?.kind === 'bug' && zoom.target !== p.name
+                const explain = BUG_EXPLAIN[p.name.toLowerCase()] ?? ''
                 return (
                   <button
                     key={p.name}
-                    className={`zm-bug zm-bug--${sz}
+                    className={`zm-bugCard
                                 ${zoomingThis ? 'is-zooming' : ''}
                                 ${fadingOthers ? 'is-fading' : ''}`}
-                    style={{
-                      left: `${positions[i].x}%`,
-                      top: `${positions[i].y}%`,
-                      animationDelay: `${i * 35}ms`,
-                    }}
+                    style={{ animationDelay: `${i * 28}ms` }}
                     onClick={() => pickProblem(p.name)}
                     disabled={!!zoom}
                   >
-                    <BugIcon className="zm-icon" />
-                    <span className="zm-label">{p.name}</span>
-                    <span className="zm-count">×{p.count}</span>
+                    <BugIcon className="zm-cardIcon" />
+                    <div className="zm-cardBody">
+                      <span className="zm-cardLabel">{p.name}</span>
+                      {explain && <span className="zm-cardExplain">{explain}</span>}
+                    </div>
+                    <span className="zm-cardCount">×{p.count}</span>
                   </button>
                 )
               })}
             </div>
-          )
-        })()}
+            {hidden > 0 && (
+              <p className="zm-moreNote">+ {hidden} less frequent root cause{hidden !== 1 ? 's' : ''} not shown</p>
+            )}
+          </div>
+        )
+      })()}
 
-        {view === 'wrenches' && (() => {
-          if (solutions.length === 0) {
-            return (
-              <div className="zm-scatter zm-scatter--wrenches"
-                   key={`wr-${problem}-empty`}
-                   style={{ '--card-accent': PROVIDER_COLOR[provider] }}>
-                <h3 className="zm-stageTitle" style={{ color: PROVIDER_COLOR[provider] }}>
-                  {problem}
-                </h3>
-                <p className="zm-empty">No mitigations were recorded for this root cause.</p>
-              </div>
-            )
-          }
-          const positions = scatter(solutions.length, `${provider}-${problem}`)
-          const sz = sizingFor(solutions.length)
-          return (
-            <div
-              className="zm-scatter zm-scatter--wrenches"
-              key={`wr-${problem}`}
-              style={{ '--card-accent': PROVIDER_COLOR[provider] }}
-            >
-              <h3 className="zm-stageTitle" style={{ color: PROVIDER_COLOR[provider] }}>
-                {problem} · {solutions.length} mitigation{solutions.length === 1 ? '' : 's'} engineers reached for
-              </h3>
-              {solutions.map((s, i) => (
-                <div
-                  key={s.name}
-                  className={`zm-wrench zm-wrench--${sz}`}
-                  style={{
-                    left: `${positions[i].x}%`,
-                    top: `${positions[i].y}%`,
-                    animationDelay: `${i * 35}ms`,
-                  }}
-                >
-                  <WrenchIcon className="zm-icon" />
-                  <span className="zm-label">{s.name}</span>
-                  <span className="zm-count">×{s.count}</span>
-                </div>
-              ))}
-            </div>
-          )
-        })()}
-      </div>
+      {view === 'wrenches' && (() => {
+        const shown  = solutions.slice(0, MAX_SOLUTIONS_SHOWN)
+        const hidden = solutions.length - shown.length
+        return (
+          <div className="zm-panel" key={`wr-${problem}`} style={{ '--card-accent': PROVIDER_COLOR[provider] }}>
+            <h3 className="zm-panel__title">
+              {problem} · top {shown.length} mitigations engineers reached for
+            </h3>
+            {solutions.length === 0
+              ? <p className="zm-empty">No mitigations recorded for this root cause.</p>
+              : (
+                <>
+                  <div className="zm-wrench-grid">
+                    {shown.map((s, i) => {
+                      const explain = MITIGATION_EXPLAIN[s.name.toLowerCase()] ?? ''
+                      return (
+                        <div
+                          key={s.name}
+                          className="zm-wrenchCard"
+                          style={{ animationDelay: `${i * 22}ms` }}
+                        >
+                          <WrenchIcon className="zm-cardIcon" />
+                          <div className="zm-cardBody">
+                            <span className="zm-cardLabel">{s.name}</span>
+                            {explain && <span className="zm-cardExplain">{explain}</span>}
+                          </div>
+                          <span className="zm-cardCount">×{s.count}</span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {hidden > 0 && (
+                    <p className="zm-moreNote">+ {hidden} less frequent mitigation{hidden !== 1 ? 's' : ''} not shown</p>
+                  )}
+                </>
+              )
+            }
+          </div>
+        )
+      })()}
     </section>
   )
 }

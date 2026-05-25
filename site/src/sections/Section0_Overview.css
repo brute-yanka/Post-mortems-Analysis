@@ -76,15 +76,15 @@
   outline: 2px solid var(--card-accent);
   outline-offset: 1px;
 }
-.ov-stat--click .ov-stat__value::after {
-  content: " →";
-  font-size: 0.9rem;
-  margin-left: 0.25rem;
-  opacity: 0.7;
-  transition: transform 200ms, opacity 200ms;
+.ov-stat__arrow {
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  font-weight: 800;
   display: inline-block;
+  opacity: 0.5;
+  transition: transform 200ms, opacity 200ms;
 }
-.ov-stat--click:hover .ov-stat__value::after {
+.ov-stat--click:hover .ov-stat__arrow {
   opacity: 1;
   transform: translateX(3px);
 }

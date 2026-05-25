@@ -69,7 +69,7 @@ for provider, folder in PROVIDERS.items():
                 'human_error':        record.get('human error'),
                 'mitigation_actions': mitigation_labels(record),
                 'url':                join_list(record.get('link', [])),
-                'summary':            record.get('summary', '').replace('\n', ' ').strip()[:500],
+                'summary':            record.get('summary', '').replace('\n', ' ').strip(),
             })
 rows.sort(key=lambda r: r['date'])
 
