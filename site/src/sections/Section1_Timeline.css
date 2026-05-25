@@ -1,0 +1,155 @@
+.tl-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  flex-wrap: wrap;
+}
+.tl-chip {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 150ms, background 150ms, border-color 150ms;
+}
+.tl-chip:hover {
+  color: var(--fg);
+  border-color: var(--fg-muted);
+}
+.tl-chip.is-on {
+  background: var(--chip-color, var(--accent));
+  color: #0e1116;
+  border-color: var(--chip-color, var(--accent));
+  font-weight: 600;
+}
+
+.tl-chart-wrap {
+  position: relative;
+  width: 100%;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+.tl-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Lanes */
+.tl-laneLine {
+  stroke: var(--border);
+  stroke-dasharray: 2 4;
+}
+.tl-laneLabel {
+  font-size: 13px;
+  font-family: ui-serif, Georgia, serif;
+  font-weight: 600;
+  transition: opacity 200ms;
+}
+.tl-lane.is-dim .tl-laneLabel { opacity: 0.28; }
+.tl-lane.is-dim .tl-laneLine  { opacity: 0.35; }
+
+/* Ticks */
+.tl-tickMark  { stroke: var(--border); }
+.tl-tickLabel {
+  font-size: 11px;
+  fill: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dots */
+.tl-dot {
+  cursor: pointer;
+  transition: opacity 200ms;
+  opacity: 0.72;
+}
+.tl-dot:hover {
+  opacity: 1;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+.tl-dot.is-dim {
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+/* Annotations */
+.tl-annotation {
+  transition: opacity 200ms;
+  cursor: pointer;
+}
+.tl-annotation.is-dim {
+  opacity: 0.15;
+  cursor: default;
+  pointer-events: none;
+}
+.tl-annotation line {
+  stroke: var(--fg-muted);
+  stroke-width: 0.6;
+  stroke-dasharray: 2 2;
+  transition: stroke 150ms, stroke-width 150ms;
+}
+.tl-annoHalo {
+  fill: none;
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+  opacity: 0.85;
+  pointer-events: none;
+  transition: opacity 150ms, stroke-width 150ms;
+}
+.tl-annoText {
+  fill: var(--fg);
+  font-size: 11.5px;
+  font-family: ui-serif, Georgia, serif;
+  font-style: italic;
+  transition: fill 150ms;
+}
+.tl-annotation:hover .tl-annoHalo { opacity: 1; stroke-width: 1.6; }
+.tl-annotation:hover line {
+  stroke: var(--anno-color, var(--accent));
+  stroke-width: 1.2;
+}
+
+/* Tooltip */
+.tl-tooltip {
+  position: fixed;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.6rem 0.8rem;
+  background: #0a0d12;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.82rem;
+  pointer-events: none;
+  z-index: 50;
+  max-width: 300px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+.tl-tooltip strong {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+.tl-tooltipTitle {
+  color: var(--fg);
+  font-weight: 500;
+  line-height: 1.4;
+}
+.tl-tooltipMeta {
+  color: var(--fg-muted);
+  font-size: 0.75rem;
+}
+
+.tl-caption {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  font-style: italic;
+}

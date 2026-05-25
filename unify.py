@@ -46,7 +46,6 @@ def mitigation_labels(record):
     logger.warning(f'Unexpected mitigation format: {m}')
     return ''
 
-
 rows = []
 for provider, folder in PROVIDERS.items():
     for json_path in glob.glob(f'{folder}/*.json'):
@@ -63,16 +62,15 @@ for provider, folder in PROVIDERS.items():
                 'date':               parse_date(record.get('time', '')),
                 'title':              record.get('title', '').replace('\n', ' ').strip(),
                 'duration_minutes':   record.get('duration') if isinstance(record.get('duration'), (int, float)) else '',
-                'services_affected':  join_list(record.get('service_name', [])),
-                'impact_symptoms':    join_list(record.get('impact symptom', [])),
-                'root_cause_l1':      root_cause_layer(record, 'layer-1'),
-                'root_cause_l2':      root_cause_layer(record, 'layer-2'),
+                'services_affected':  join_list(list(dict.fromkeys(record.get('service_name', [])))),
+                'impact_symptoms':    join_list(list(dict.fromkeys(record.get('impact symptom', [])))),
+                'root_cause_l1':      '; '.join(dict.fromkeys(filter(None, root_cause_layer(record, 'layer-1').split('; ')))),
+                'root_cause_l2':      '; '.join(dict.fromkeys(filter(None, root_cause_layer(record, 'layer-2').split('; ')))),
                 'human_error':        record.get('human error'),
                 'mitigation_actions': mitigation_labels(record),
                 'url':                join_list(record.get('link', [])),
                 'summary':            record.get('summary', '').replace('\n', ' ').strip()[:500],
             })
-
 rows.sort(key=lambda r: r['date'])
 
 with open('cloud_incidents.csv', 'w', newline='', encoding='utf-8') as f:

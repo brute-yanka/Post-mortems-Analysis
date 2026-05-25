@@ -642,7 +642,7 @@
         "verification": "lixy"
     },
     "azure-20161121-1": {
-        "title": "Microsoft Azure Portal – Errors using Azure Resource Manager to create Virtual Machines",
+        "title": "Microsoft Azure Portal - Errors using Azure Resource Manager to create Virtual Machines",
         "link": [
             "https://github.com/IntelligentDDS/Post-mortems-Analysis/blob/master/raw-public/azure/meta_pdf/2016.11.21-2016.12.23.pdf"
         ],

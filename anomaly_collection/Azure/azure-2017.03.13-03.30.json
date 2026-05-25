@@ -342,7 +342,7 @@
         "verification": "yugb"
     },
     "azure-20170323-2": {
-        "title": "RCA – Data Lake Analytics and Data Lake Store – East US 2",
+        "title": "RCA - Data Lake Analytics and Data Lake Store - East US 2",
         "link": [
             "https://github.com/IntelligentDDS/Post-mortems-Analysis/blob/master/raw-public/azure/meta_pdf/2017.03.13-03.30.pdf"
         ],

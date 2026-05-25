@@ -1,0 +1,119 @@
+.ov-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+  perspective: 1400px;
+}
+
+.ov-card {
+  position: relative;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--card-accent, var(--accent));
+  background: var(--bg-elev);
+  border-radius: 8px;
+  padding: 1.75rem 1.75rem 2rem;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 380ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 200ms;
+  will-change: transform;
+  overflow: hidden;
+}
+.ov-card:hover {
+  transition: transform 60ms linear, border-color 200ms;
+  border-color: #4a5260;
+}
+.ov-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%),
+                              rgba(255, 255, 255, 0.04), transparent 70%);
+  opacity: 0;
+  transition: opacity 250ms;
+  pointer-events: none;
+  z-index: 1;
+}
+.ov-card:hover::before { opacity: 1; }
+.ov-card > * { position: relative; z-index: 2; }
+
+.ov-card__head { margin-bottom: 1.5rem; }
+.ov-card__head h3 {
+  margin: 0;
+  font-size: 1.85rem;
+  color: var(--card-accent);
+}
+.ov-card__sub {
+  margin: 0.2rem 0 0;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+
+.ov-card__stats {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.ov-stat {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 0.95rem;
+  align-items: center;
+  padding: 0.45rem 0.6rem;
+  margin: 0 -0.6rem;
+  border-radius: 6px;
+  transition: background 150ms;
+}
+.ov-stat--click {
+  cursor: pointer;
+}
+.ov-stat--click:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.ov-stat--click:focus-visible {
+  outline: 2px solid var(--card-accent);
+  outline-offset: 1px;
+}
+.ov-stat--click .ov-stat__value::after {
+  content: " →";
+  font-size: 0.9rem;
+  margin-left: 0.25rem;
+  opacity: 0.7;
+  transition: transform 200ms, opacity 200ms;
+  display: inline-block;
+}
+.ov-stat--click:hover .ov-stat__value::after {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+.ov-stat__icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--card-accent);
+  cursor: help;
+  border-radius: 4px;
+}
+.ov-stat__icon svg {
+  width: 22px;
+  height: 22px;
+}
+.ov-stat__body {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.ov-stat__value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ov-stat__label {
+  font-size: 0.88rem;
+  color: var(--fg-muted);
+  margin-top: 0.2rem;
+}

@@ -1,0 +1,37 @@
+.tt-wrap {
+  display: inline-flex;
+  outline: none;
+}
+
+.tt-bubble {
+  position: fixed;
+  transform: translate(-50%, 12px);
+  background: #0a0d12;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  min-width: 200px;
+  max-width: 260px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10000;
+  line-height: 1.45;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+  animation: tt-fade 140ms ease-out;
+}
+@keyframes tt-fade {
+  from { opacity: 0; transform: translate(-50%, 4px); }
+  to   { opacity: 1; transform: translate(-50%, 12px); }
+}
+.tt-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: var(--border);
+}

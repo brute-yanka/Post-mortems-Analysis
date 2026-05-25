@@ -1,0 +1,228 @@
+.cs-section .cs-stage {
+  position: relative;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-height: 560px;
+  overflow: hidden;
+  background-image:
+    radial-gradient(ellipse at top, rgba(255, 255, 255, 0.03), transparent 60%),
+    radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.25), transparent 50%);
+}
+
+.cs-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+.cs-crumb {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: inherit;
+  transition: background 150ms;
+}
+.cs-crumb:hover { background: rgba(240, 180, 41, 0.08); }
+.cs-crumbSep { color: var(--fg-muted); opacity: 0.6; }
+
+/* ---------- Clouds view ---------- */
+.zm-clouds {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  padding: 3rem 1.5rem;
+  min-height: 560px;
+  flex-wrap: wrap;
+  animation: zm-fade-in 380ms ease-out;
+}
+
+.zm-cloud {
+  background: transparent;
+  border: none;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--card-accent);
+  font-family: inherit;
+  position: relative;
+  transition: transform 320ms cubic-bezier(0.2, 0.7, 0.2, 1),
+              opacity 320ms;
+  will-change: transform, opacity;
+}
+.zm-cloud:disabled { cursor: default; }
+
+.zm-cloud__svg {
+  width: 230px;
+  height: 155px;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.45));
+  transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1),
+              filter 280ms;
+  animation: zm-float 6s ease-in-out infinite;
+}
+.zm-cloud:nth-child(2) .zm-cloud__svg { animation-delay: -2s; }
+.zm-cloud:nth-child(3) .zm-cloud__svg { animation-delay: -4s; }
+
+.zm-cloud:hover:not(:disabled) .zm-cloud__svg {
+  transform: translateY(-8px) scale(1.05);
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.55));
+}
+
+.zm-cloud__sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-top: 0.4rem;
+}
+.zm-cloud__name {
+  font-size: 2rem;
+  font-family: ui-serif, Georgia, serif;
+  color: var(--card-accent);
+  line-height: 1;
+}
+.zm-cloud__count {
+  font-size: 0.9rem;
+  color: var(--fg-muted);
+}
+
+.zm-cloud.is-zooming {
+  transform: scale(4) translateY(-6%);
+  opacity: 0;
+  transition: transform 520ms cubic-bezier(0.4, 0.7, 0.5, 1),
+              opacity 520ms ease-in;
+  z-index: 2;
+}
+.zm-cloud.is-fading {
+  transform: scale(0.75);
+  opacity: 0;
+  transition: transform 380ms ease-in, opacity 380ms ease-in;
+}
+
+@keyframes zm-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes zm-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---------- Scatter views (bugs / wrenches) ---------- */
+.zm-scatter {
+  position: relative;
+  min-height: 560px;
+  padding: 3.25rem 1.5rem 2rem;
+  animation: zm-zoom-in 520ms cubic-bezier(0.16, 0.7, 0.24, 1);
+}
+@keyframes zm-zoom-in {
+  from { opacity: 0; transform: scale(1.18); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.zm-stageTitle {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-size: 1.35rem;
+  font-family: ui-serif, Georgia, serif;
+  text-transform: capitalize;
+  letter-spacing: 0.01em;
+}
+
+.zm-bug, .zm-wrench {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  font-family: inherit;
+  text-align: center;
+  max-width: 200px;
+  animation: zm-pop-in 420ms cubic-bezier(0.3, 1.5, 0.5, 1) backwards;
+  transition: transform 220ms cubic-bezier(0.3, 1.2, 0.4, 1);
+}
+.zm-bug    { cursor: pointer; color: #ff5151; }
+.zm-wrench { cursor: default; color: var(--card-accent); }
+
+.zm-bug:hover:not(:disabled) {
+  transform: translate(-50%, -50%) scale(1.12);
+  z-index: 3;
+}
+.zm-wrench:hover { z-index: 3; }
+
+.zm-bug:disabled { cursor: default; }
+
+.zm-icon {
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+}
+.zm-bug--lg .zm-icon, .zm-wrench--lg .zm-icon { width: 58px; height: 58px; }
+.zm-bug--md .zm-icon, .zm-wrench--md .zm-icon { width: 44px; height: 44px; }
+.zm-bug--sm .zm-icon, .zm-wrench--sm .zm-icon { width: 34px; height: 34px; }
+
+.zm-label {
+  font-size: 0.88rem;
+  color: var(--fg);
+  text-transform: capitalize;
+  font-weight: 500;
+  max-width: 170px;
+  line-height: 1.25;
+}
+.zm-bug--sm .zm-label, .zm-wrench--sm .zm-label {
+  font-size: 0.78rem;
+  max-width: 130px;
+}
+.zm-bug--md .zm-label, .zm-wrench--md .zm-label {
+  font-size: 0.83rem;
+  max-width: 150px;
+}
+
+.zm-count {
+  font-size: 0.72rem;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bug zoom anim */
+.zm-bug.is-zooming {
+  transform: translate(-50%, -50%) scale(4);
+  opacity: 0;
+  transition: transform 520ms cubic-bezier(0.4, 0.7, 0.5, 1),
+              opacity 520ms ease-in;
+  z-index: 4;
+}
+.zm-bug.is-fading {
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+  transition: transform 380ms ease-in, opacity 380ms ease-in;
+}
+
+@keyframes zm-pop-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.zm-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--fg-muted);
+  font-style: italic;
+  font-size: 1rem;
+}

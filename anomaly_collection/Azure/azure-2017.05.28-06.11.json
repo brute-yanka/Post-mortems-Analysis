@@ -72,7 +72,7 @@
         "verification": "lixy, yugb"
     },
     "azure-20170529-1": {
-        "title": "IoT Hub – Error message when deploying",
+        "title": "IoT Hub - Error message when deploying",
         "link": [
             "https://github.com/IntelligentDDS/Post-mortems-Analysis/blob/master/raw-public/azure/meta_pdf/2017.04.11-06.11.pdf"
         ],
